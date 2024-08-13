@@ -17,8 +17,8 @@
             src="./photos/photo_1.jpg"
             alt="Elise Baker, blue hair, 25 years old"
           />
-          <h3>Elise Baker</h3>
-          <p>25</p>
+          <h2>Elise Baker</h2>
+          <span>25</span>
           <div class="choice nope">NOPE</div>
           <div class="choice like">LIKE</div>
         </article>
@@ -27,8 +27,8 @@
             src="./photos/photo_2.png"
             alt="Vesper Eri, curly hair, 18 years old"
           />
-          <h3>Vesper Eri</h3>
-          <p>18</p>
+          <h2>Vesper Eri</h2>
+          <span>18</span>
           <div class="choice nope">NOPE</div>
           <div class="choice like">LIKE</div>
         </article>
@@ -115,17 +115,39 @@
       margin: 0 auto;
 
       & article {
-        background: black;
+        cursor: grab;
         border-radius: 8px;
         overflow: hidden;
         position: absolute;
         height: 100%;
         width: 100%;
+        inset: 0;
+        z-index: 2;
 
         & img {
           width: 100%;
           height: 100%;
           object-fit: cover;
+        }
+
+        & h2 {
+          position: absolute;
+          inset: 0;
+          padding: 16px;
+          color: white;
+          font-size: 24px;
+          font-weight: 500;
+          height: 100%;
+          width: 100%;
+          display: flex;
+          align-items: flex-end;
+          background: linear-gradient(0deg, #00000088 20%, transparent 40%);
+        }
+
+        & span {
+          margin-left: 4px;
+          font-size: 18px;
+          line-height: 24px;
         }
       }
     }
