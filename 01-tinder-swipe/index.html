@@ -336,6 +336,11 @@
         actualCard.removeAttribute("style");
         actualCard.classList.remove("reset");
       });
+
+      // reset the choice info opacity
+      actualCard
+        .querySelectorAll(".choice")
+        .forEach((el) => (el.style.opacity = 0));
     }
   }
 
