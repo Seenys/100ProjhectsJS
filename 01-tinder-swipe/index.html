@@ -25,6 +25,12 @@
         <div class="choice nope">NOPE</div>
         <div class="choice like">LIKE</div>
       </article>
+      
+        <span>
+          no more cards... <br />
+          try again later
+        </span>
+      
     </div>
     <footer>
       <button class="is-refresh" aria-label="undo"></button>
@@ -138,6 +144,16 @@
     height: 100%;
     margin: 0 auto;
 
+    & > span {
+      display: grid;
+      place-content: center;
+      color: #777;
+      font-size: 14px;
+      text-align: center;
+      height: 100%;
+      z-index: -1;
+    }
+
     & article {
       cursor: grab;
       border-radius: 8px;
@@ -149,12 +165,12 @@
       z-index: 2;
 
       &.go-left {
-        transform: translateX(-150%) rotate(-20deg) !important;
+        transform: translateX(-200%) rotate(-30deg) !important;
         z-index: 1;
       }
 
       &.go-right {
-        transform: translateX(150%) rotate(20deg) !important;
+        transform: translateX(200%) rotate(30deg) !important;
         z-index: 1;
       }
 
@@ -250,9 +266,33 @@
       const decisionMade = Math.abs(pullDeltaX) >= DECISION_THRESHOLD;
 
       // if the user has dragged the card to the right
-      if(decisionMade){}else{}
+      if (decisionMade) {
+        const goRight = pullDeltaX >= 0;
+        const goLeft = !goRight;
 
-      isAnimating = false;
+        // animate the card to the right or left
+        actualCard.classList.add(goRight ? "go-right" : "go-left");
+        actualCard.addEventListener(
+          "transitionend",
+          () => {
+            // remove the card from the DOM
+            actualCard.remove();
+          },
+          { once: true }
+        );
+      } else {
+        // reset the card to its original position
+        actualCard.classList.add("reset");
+        actualCard.classList.remove("go-right", "go-left");
+      }
+
+      // reset the pullDeltaX and isAnimating
+      actualCard.addEventListener("transitionend", () => {
+        pullDeltaX = 0;
+        isAnimating = false;
+        actualCard.removeAttribute("style");
+        actualCard.classList.remove("reset");
+      });
     }
   }
 
