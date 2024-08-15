@@ -25,12 +25,11 @@
         <div class="choice nope">NOPE</div>
         <div class="choice like">LIKE</div>
       </article>
-      
-        <span>
-          no more cards... <br />
-          try again later
-        </span>
-      
+
+      <span>
+        no more cards... <br />
+        try again later
+      </span>
     </div>
     <footer>
       <button class="is-refresh" aria-label="undo"></button>
@@ -184,6 +183,35 @@
         transform: translate(0) rotate(0) !important;
       }
 
+      & .choice {
+        color: black;
+        position: absolute;
+        border-radius: 8px;
+        border: 4px solid;
+        padding: 4px 8px;
+        font-size: 24px;
+        font-weight: bold;
+        z-index: 999;
+        top: 32px;
+        right: 16px;
+        opacity: 0;
+
+        &.nope {
+          border-color: #f44336;
+          color: #f44336;
+          transform: rotate(30deg);
+          width: fit-content;
+        }
+
+        &.like {
+          border-color: #4caf50;
+          left: 16px;
+          color: #4caf50;
+          transform: rotate(-30deg);
+          width: fit-content;
+        }
+      }
+
       & img {
         width: 100%;
         height: 100%;
@@ -224,6 +252,8 @@
     // get the first article element
     const actualCard = event.target.closest("article");
 
+    if (!actualCard) return;
+
     // get the initial position of the mouse
 
     const startX = event.pageX ?? event.touches[0].pageX;
@@ -252,6 +282,16 @@
       // move the card to the right
       actualCard.style.transform = `translateX(${pullDeltaX}px) rotate(${rotation}deg)`;
       actualCard.style.cursor = "grabbing";
+
+      // show the choice buttons
+      const opacity = Math.abs(pullDeltaX) / 100;
+      const isRight = pullDeltaX > 0;
+
+      const choiceEl = isRight
+        ? actualCard.querySelector(".choice.like")
+        : actualCard.querySelector(".choice.nope");
+
+      choiceEl.style.opacity = opacity;
     }
 
     function onEnd(event) {
