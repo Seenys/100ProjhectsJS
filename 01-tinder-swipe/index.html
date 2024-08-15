@@ -324,7 +324,7 @@
         // reset the card to its original position
         actualCard.classList.add("reset");
         actualCard.classList.remove("go-right", "go-left");
-        actualCard.querySelector(".choice").forEach((element) => {
+        actualCard.querySelectorAll(".choice").forEach((element) => {
           element.style.opacity = 0;
         });
       }
