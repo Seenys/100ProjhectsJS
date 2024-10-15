@@ -51,10 +51,35 @@
   function drawBricks() {}
 
   function collisionDetection() {}
-  function ballMovement() {}
+  function ballMovement() {
+    // rebotar en los bordes horizontales
+    if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+      dx = -dx;
+    }
+    // rebotar en los bordes verticales
+
+    if (y + dy < ballRadius) {
+      dy = -dy;
+    }
+
+    // game over
+    if (y + dy > canvas.height - ballRadius) {
+      console.log("GAME OVER");
+      document.location.reload();
+    }
+
+    // rebotar en la paleta
+    x += dx;
+    y += dy;
+  }
   function paddleMovement() {}
 
+  function clearCanvas() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
   function draw() {
+    clearCanvas();
     // 1º Draw the ball
     drawBall();
     drawPaddle();
