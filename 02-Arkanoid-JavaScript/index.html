@@ -9,7 +9,7 @@
   canvas {
     border: 4px solid #000;
     border-bottom: transparent;
-    background: #000;
+    background: url("./bkg.png") repeat;
     margin: 0 auto;
     display: block;
     box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.4);
@@ -18,12 +18,25 @@
 
 <canvas></canvas>
 
+<img id="sprite" src="./sprite.png" alt="sprite arkanoid" hidden"
+style="display: none;"/>
+<img
+  id="bricks"
+  src="./bricks.png"
+  alt="sprite briks arkanoid"
+  hidden
+  style="display: none"
+/>
+
 <script>
   const canvas = document.querySelector("canvas");
   const ctx = canvas.getContext("2d");
 
-  canvas.width = 800;
-  canvas.height = 600;
+  const $sprite = document.querySelector("#sprite");
+  const $bricks = document.querySelector("#bricks");
+
+  canvas.width = 448;
+  canvas.height = 400;
 
   // Variables
   let counter = 0;
@@ -37,6 +50,18 @@
   let dx = 2;
   let dy = -2;
 
+  // Paddle Variables
+  const paddleHeight = 10;
+  const paddleWidth = 50;
+
+  // Paddle Position
+  let paddleX = (canvas.width - paddleWidth) / 2;
+  let paddleY = canvas.height - paddleHeight - 15;
+
+  let rightPressed = false;
+  let leftPressed = false;
+
+  let PADDLE_SENSIBILITY = 8;
   // Functions
 
   function drawBall() {
@@ -47,7 +72,20 @@
     ctx.closePath();
   }
 
-  function drawPaddle() {}
+  function drawPaddle() {
+    ctx.drawImage(
+      $sprite, //imagen
+      29, // cordenadas x en la imagen
+      174, // cordenadas y en la imagen
+      paddleWidth, // ancho de la imagen
+      paddleHeight, // alto de la imagen
+      paddleX, // cordenadas x en el canvas
+      paddleY, // cordenadas y en el canvas
+      paddleWidth, // ancho en el canvas
+      paddleHeight // alto en el canvas
+    );
+  }
+
   function drawBricks() {}
 
   function collisionDetection() {}
@@ -63,22 +101,59 @@
     }
 
     // game over
-    if (y + dy > canvas.height - ballRadius) {
+
+    const isBallSameHeightAsPaddle = x > paddleX && x < paddleX + paddleWidth;
+    const isBallTouchingPaddle = y + dy > paddleY;
+
+    if (isBallSameHeightAsPaddle && isBallTouchingPaddle) {
+      dy = -dy;
+    } else if (y + dy > canvas.height - ballRadius) {
       console.log("GAME OVER");
-      document.location.reload();
+      window.location.reload();
     }
 
     // rebotar en la paleta
     x += dx;
     y += dy;
   }
-  function paddleMovement() {}
+  function paddleMovement() {
+    if (rightPressed && paddleX < canvas.width - paddleWidth) {
+      paddleX += PADDLE_SENSIBILITY;
+    } else if (leftPressed && paddleX > 0) {
+      paddleX -= PADDLE_SENSIBILITY;
+    }
+  }
 
   function clearCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
 
+  // Event Listeners
+  function initEvents() {
+    document.addEventListener("keydown", keyDownHandler);
+    document.addEventListener("keyup", keyUpHandler);
+
+    function keyDownHandler(e) {
+      const { key } = e;
+      if (key === "Right" || key === "ArrowRight") {
+        rightPressed = true;
+      } else if (key === "Left" || key === "ArrowLeft") {
+        leftPressed = true;
+      }
+    }
+
+    function keyUpHandler(e) {
+      const { key } = e;
+      if (key === "Right" || key === "ArrowRight") {
+        rightPressed = false;
+      } else if (key === "Left" || key === "ArrowLeft") {
+        leftPressed = false;
+      }
+    }
+  }
+
   function draw() {
+    console.log(rightPressed, leftPressed);
     clearCanvas();
     // 1º Draw the ball
     drawBall();
@@ -89,7 +164,11 @@
     ballMovement();
     collisionDetection();
 
+    // 3º Paddle movement
+    paddleMovement();
+
     window.requestAnimationFrame(draw);
   }
   draw();
+  initEvents();
 </script>
